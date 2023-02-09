@@ -1,0 +1,12 @@
+{
+    "id": "yzhua006-update",
+    "name": "app更新组件",
+    "version": "1.0.3",
+    "description": "请求接口返回ios及Android线上版本信息，再与本机app版本对比，如需更新则弹出更新提示框",
+    "keywords": [
+        "更新",
+        "热更新",
+        "app",
+        "不支持NVUE"
+    ]
+}
