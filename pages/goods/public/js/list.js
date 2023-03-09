@@ -140,10 +140,19 @@ export default {
       this.goodsList = [];
       this.$refs.mescroll.refresh();
     },
-    //商品详情
-    toDetail(item) {
-      this.$util.redirectTo('/pages/goods/detail/detail', {
-        sku_id: item.sku_id
+    //打开进入下单页面的选择框
+    openChoose(item) {
+      //备份给跳转事件使用
+      this.chooseId = item.sku_id;
+      //是否是现片
+      const isXp = item.rimless == 0;
+      if (isXp) return this.$refs.chooseDetail.open();
+      this.toDetail(0); //0 普通下单 1 表格下单
+    },
+    toDetail(e) {
+      this.$util.redirectTo(`/pages/goods/detail/detail`, {
+        sku_id: this.chooseId,
+        isXp: e,
       });
     },
     search() {

@@ -1,5 +1,5 @@
 <template>
-  <view :data-theme="themeStyle">
+  <view :data-theme="themeStyle" v-if="isXp == 0">
     <view scroll-y="true" class="goods-detail" :class="isIphoneX ? 'active' : ''">
       <view class="goods-container">
         <!-- 商品媒体信息 -->
@@ -593,6 +593,36 @@
 
     <icon-kf />
   </view>
+  <view class="tableDetail" v-else>
+    <view class="head">
+      <!-- v-for="(item,index) in JSON.parse(goodsSkuDetail.goods_spec_format)" -->
+      <!-- {{ JSON.stringify(goodsSkuDetail.goods_spec_format) }} -->
+      <view class="btn-box" v-for="(specItem, index) in goodsSkuDetail.goods_spec_format" :key="index">
+        <view :class="['btn', index == specIndex ? 'active' : '']" v-for="(item, index) in specItem.value" @click="specIndex = index">{{ item.spec_value_name }}</view>
+      </view>
+      <!-- <view class="btn-box">
+				<view class="btn">近视</view>
+				<view class="btn">老花</view>
+			</view> -->
+    </view>
+    <!-- <diy-table /> -->
+    <view class="table">
+      <view class="th">
+        <!-- <view class="td tr"></view> -->
+        <view class="td tr" v-for="(item, index) in thead_list" :key="index">{{ item }}</view>
+      </view>
+      <view class="th" v-for="(row, row_index) in table_list" :key="row_index">
+        <view
+          :class="['td', col_index == 0 ? 'tr' : '', active_list.filter(item => item.row_index == row_index && item.col_index == col_index).length > 0 ? 'active' : '']"
+          v-for="(col, col_index) in row"
+          :key="col_index"
+          @click="handleClickChoose({ row_index, col_index, col, row })"
+        >
+          {{ row_index }},{{ col_index }}{{ col }}
+        </view>
+      </view>
+    </view>
+  </view>
 </template>
 
 <script>
@@ -611,6 +641,7 @@ import globalConfig from '@/common/js/golbalConfig.js';
 import toTop from '@/components/toTop/toTop.vue';
 import uParse from '@/components/u-parse/u-parse.vue';
 import Config from '../../../common/js/config.js';
+import tableDetail from './tableDetail.js';
 export default {
   components: {
     nsGoodsAction,
@@ -661,7 +692,7 @@ export default {
     }
     console.log(ret);
   },
-  mixins: [detail, scroll, globalConfig],
+  mixins: [detail, scroll, globalConfig, tableDetail],
   /**
    * 自定义分享内容
    * @param {Object} res
@@ -698,6 +729,7 @@ export default {
 <style lang="scss">
 @import './../../../common/css/goods_detail.scss';
 @import '../public/css/detail.scss';
+@import './tableDetail.scss';
 </style>
 <style scoped>
 .richText /deep/ image {

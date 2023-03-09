@@ -385,32 +385,17 @@
 			};
 		},
 		mounted() {
-			console.log(this.goodsDetail.sku_spec_format,"多规格")
 			this.isIphoneX = this.$util.uniappIsIPhoneX();
 			this.systemInfo = uni.getSystemInfoSync();
 			this.getWholesale(this.goodsDetail);
 			if (this.goodsDetail.goods_id == 0) this.$emit("error")
-			// let t = setInterval(() => {
-			// 	if (this.cylinder_mirrorArray_bk.length > 0) {
-			// 		clearInterval(t);
-			// 		this.getClickGoodsAdd();
-			// 	}
-			// }, 100)
 		},
 		watch: {
-			// rimless(nval,oval){
-			// 	//console.error(nval,oval,"rimless")
-			// },
 			pointLimit(newNum, oldNum) {
 				this.limitNumber = Number(newNum);
 			},
 			goodsDetail(newData, oldData) {
-					// this.getWholesale(newData);
 				this.goodsDetailChange(newData)
-				// if (newData.rimless == 1) {
-					console.error(this.goodsDetail,"更新了一次");
-				// }
-				
 				if (this.goodsDetail.rimless == 1) {
 					this.rimless = this.goodsDetail.rimless
 					this.getClickGoodsAdd({}, 1)
@@ -423,11 +408,8 @@
 			}
 		},
 		methods: {
-			goodsDetailChange(newData, oldData) {
-				//console.log(this.goodsDetail, "goodsDetailgoodsDetailgoodsDetailgoodsDetail");
-				//console.log(newData.photometric)
+			goodsDetailChange(newData) {
 				this.skuId = newData.sku_id;
-				console.error(this.goodsDetail.luminosity_status,"luminosity_status");
 				if (this.goodsDetail.luminosity_status != 1) this.setBalllist()
 				if (newData.photometric != 0 || newData.luminosity_status == 1) { //联合光度
 					//球镜范围
@@ -474,7 +456,7 @@
 					this.cylinder_mirrorArray_bk = cylinder_mirrorArray
 					this.myValue = []
 					this.getClickGoodsAdd();
-					// //console.log("柱镜", this.cylinder_mirrorArray_bk, "球镜", this.ball_mirrorArray_bk);
+
 					this.axisArray = axisArray
 					this.sumArray = sumArray
 					this.objArray = objArray
@@ -500,20 +482,13 @@
 				})
 				
 				this.newballlist = arr
-				// //console.log(this.newballlist, "球镜数据")
 			},
 			getSumPrice() {
 				let sum = 0
-				// //console.log(this.myValue,
-				// 	"this.goodsDetail.goods_spec_formatthis.goodsDetail.goods_spec_formatthis.goodsDetail.goods_spec_format"
-				// )
 				this.myValue.forEach(e => {
 					sum += parseFloat(e.discount_price || 0) * e.product_num
 				})
 				this.sumPrice = sum
-			},
-			nomove(e) {
-				// //console.log(e);
 			},
 			/**
 			 * @param {min}
@@ -524,7 +499,6 @@
 					s = 0.25
 				for (let i = min; i <= max; i += s) {
 					s = i < this.goodsDetail.step && this.goodsDetail.step != 0 ? 0.5 : 0.25
-					//console.log(`min=${min},max=${max},s=${s},step=${this.goodsDetail.step},i=${i}`)
 					let num = i > 0 ? '+' + i : i < 0 ? i : i
 					num = parseFloat(num).toFixed(2)
 					if (num > 0) num = `+${num}`
@@ -534,7 +508,6 @@
 				return arr;
 			},
 			setMyPopup(i, name, list, dataitem = null, index) {
-				
 				this.doIndex(i)
 				dataitem = this.myValue[this.nowIndex]
 				let item = dataitem
@@ -569,13 +542,11 @@
 							return a - b
 						})
 						dataitem.cylinder_mirrorArray = arr
-						console.log(arr,name,"0----------")
 						this.$refs[name].list = arr
 						this.$refs[name].open()
 						return
 					}
 				}
-						console.log(list,name,"1----------")
 				this.$refs[name].list = list
 				if(name=='ball'&&this.$refs[name].list.length===0)this.$refs[name].list=this.ball_mirrorArray_bk
 				if(name=='cylinder'&&this.$refs[name].list.length===0)this.$refs[name].list=this.cylinder_mirrorArray_bk
@@ -584,13 +555,6 @@
 
 			},
 			doIndex(index) {
-				// //切换数组操作下标
-				// if(this.nowIndex != index){
-				// 	//修改球镜柱镜
-				// 	this.ball_mirrorArray = this.ball_mirrorArray_bk;
-				// 	this.cylinder_mirrorArray = this.cylinder_mirrorArray_bk;
-				// }
-
 				this.nowIndex = index;
 			},
 			async getWholesale(newData) {
@@ -600,12 +564,8 @@
 				});
 				
 				if (res.code == 0) {
-					////console.log(res)
 					this.is_wholesaler = res.is_wholesaler
 				}
-				////console.log(this.goodsDetail.luminosity_status, "状态码新产品", this.goodsDetail);
-				// if (this.goodsDetail.luminosity_status != 1) return
-				////console.log("开始插球镜柱镜");
 				var mirro = await this.$api.sendRequest({
 					url: '/api/goodssku/luminosity_sku',
 					data: {
@@ -615,10 +575,6 @@
 				})
 				delete mirro.timestamp
 				this.mirrolist = Object.values(mirro)
-				// if (this.mirrolist.length == 0) uni.showToast({
-				// 	title: "没有拉取到柱镜信息,让管理员检查goodssku/luminosity_sku接口",
-				// 	icon: "none"
-				// })
 				this.setBalllist()
 			},
 			reset() {
@@ -628,17 +584,10 @@
 				this.cylinder_mirrorArray = this.cylinder_mirrorArray_bk
 			},
 			bindPickerChangeF(e) {
-				////console.log('picker发送选择改变，左右眼球携带值为', e.target.value)
 				this.myValue[this.nowIndex].leftIndex = e.target.value
-				//this.myValue[this.lastIndex].leftIndex = e.target.value
-				//修改球镜选择范围
-				//const cylinderValue = this.leftArray[this.leftIndex]
-				//if(this.ball_mirrorIndex!=null) return;//判定首次选择才删改互补镜值，以免造成重复删改导致数据缺失		
 			},
-			//球镜的值+柱镜的值 <= this.photometric
 			bindPickerChangeA(e) {
 				let item = this.myValue[this.nowIndex]
-				////console.log('picker发送选择改变，球镜携带值为', e.target.value)
 				item.ball_mirrorIndex = e.target.value
 				if (this.goodsDetail.luminosity_status == 1) {
 					item.ball_mirrorArray = this.newballlist
@@ -646,26 +595,16 @@
 					this.getSumPrice()
 					return
 				}
-
-				//this.myValue[this.lastIndex].ball_mirrorIndex = e.target.value
-				//修改柱镜选择范围
 				const ballValue = item.ball_mirrorArray[item.ball_mirrorIndex]
-				//if(this.cylinder_mirrorIndex!=null) return;//判定首次选择才删改互补镜值，以免造成重复删改导致数据缺失。
 				let arr = []
-				////console.log(this.ball_mirrorArray)
 				this.cylinder_mirrorArray_bk.forEach(num => {
 					if (parseFloat(num) + parseFloat(ballValue) >= parseFloat(this.photometric)) {
 						arr.push(num)
 					}
 				})
-				//如果有值的时候
-				////console.log(item.cylinder_mirrorIndex, "cylinder")
 				if (item.cylinder_mirrorIndex != null) {
-					//目前的值
-					////console.log('目前的值' + item.cylinder_mirrorIndex)
 					const cylinderValue = item.cylinder_mirrorArray[item.cylinder_mirrorIndex]
 					var cylinderindex = arr.indexOf(cylinderValue)
-					////console.log(cylinderindex)
 					if (cylinderindex == -1) {
 						item.cylinder_mirrorIndex = 0
 					} else {
@@ -673,13 +612,11 @@
 					}
 				}
 				item.cylinder_mirrorArray = arr;
-				////console.log(item.cylinder_mirrorArray); //柱镜
 			},
 			bindPickerChangeB(e) {
 				let item = this.myValue[this.nowIndex]
 				const val = item.cylinder_mirrorArray[e.target.value]
 				const v1 = this.myValue[this.nowIndex].ball_mirrorArray[this.myValue[this.nowIndex].ball_mirrorIndex]
-				////console.log(this.goodsDetail.luminosity_status, "this.goodsDetail.luminosity_status")
 				if (this.goodsDetail.luminosity_status == 1) {
 					this.mirrolist.forEach((ei, index) => {
 						if (ei.cylinder_max >= val && val >= ei.cylinder_min && v1 >= ei.ball_min && v1 <= ei
@@ -687,24 +624,18 @@
 							item.discount_price = ei.discount_price
 							item.sku_id = ei.sku_id
 						}
-						////console.log(ei, ei.cylinder_max >= val && val >= ei.cylinder_min,
-							// '222222222222222222222222222222222222222', ei.cylinder_max >= val && val >= ei
-							// .cylinder_min ? "1" : "2", ei.sku_id)
 					})
 					this.myValue[this.nowIndex].cylinder_mirrorIndex = e.target.value
 					item.cylinder_mirrorIndex = e.target.value
 					this.getSumPrice()
 					return
 				}
-				//console.log('picker发送选择改变，柱镜携带值为', e.target.value)
 				this.myValue[this.nowIndex].cylinder_mirrorIndex = e.target.value
 				item.cylinder_mirrorIndex = e.target.value
 				//修改球镜选择范围
 				const cylinderValue = item.cylinder_mirrorArray[item.cylinder_mirrorIndex]
-				//if(this.ball_mirrorIndex!=null) return;//判定首次选择才删改互补镜值，以免造成重复删改导致数据缺失。
 				let arr = []
 				this.ball_mirrorArray_bk.forEach(num => { //-10
-					////console.log(num)
 					if (parseFloat(num) + parseFloat(cylinderValue) >= parseFloat(this.photometric)) {
 						arr.push(num)
 					}
@@ -720,21 +651,16 @@
 					}
 				}
 				item.ball_mirrorArray = arr
-				//console.log(item.ball_mirrorIndex)
-				//console.log(item.ball_mirroCrArray); //球镜
 			},
 			bindPickerChangeC(e) {
-				//console.log('picker发送选择改变，轴位携带值为', e.target.value)
 				this.myValue[this.nowIndex].axisIndex = e.target.value
 				this.axisIndex = e.target.value
 			},
 			bindPickerChangeD(e) {
-				//console.log('picker发送选择改变，ADD携带值为', e.target.value)
 				this.myValue[this.nowIndex].sumIndex = e.target.value
 				this.sumIndex = e.target.value
 			},
 			bindPickerChangeE(e) {
-				//console.log('picker发送选择改变，通道携带值为', e.target.value)
 				this.myValue[this.nowIndex].objIndex = e.target.value
 				this.objIndex = e.target.value
 			},
@@ -766,7 +692,6 @@
 				this.$refs.skuPopup.close();
 			},
 			change(skuId, spec_id) {
-				//console.log("选择膜层", skuId, spec_id, this.goodsDetail)
 				if (this.disabled) return;
 				this.btnSwitch = false;
 				this.skuId = skuId;
@@ -807,7 +732,7 @@
 						sku_id: this.skuId
 					},
 					success: res => {
-						console.log(res.sku_images,"goodsSkuDetail.sku_images图片");
+						// console.log(res.sku_images,"goodsSkuDetail.sku_images图片");
 						let data = res.data;
 						if (data != null) {
 							data.unit = data.unit || '件';
@@ -862,8 +787,6 @@
 							this.goodsSkuDetail = data;
 							this.dealData();
 							//每次请求重新渲染sku
-							// this.goodsDetail.goods_spec_format = this.goodsSkuDetail.sku_spec_format;
-
 							this.goodsSkuDetail.show_price = this.goodsDetail.group_id == 0 ? this
 								.goodsSkuDetail.promotion_price : this.goodsSkuDetail.pintuan_price;
 							this.goodsSkuDetail.save_price =
@@ -1172,7 +1095,6 @@
 			},
 			//点击增加单笔数量
 			getClickGoodsAdd(obj, eyeIndex) {
-				//console.log(this.cylinder_mirrorArray_bk, "sssssssssss");
 				this.myValue.push({
 					objIndex: undefined,
 					product_num: 1,
@@ -1185,11 +1107,7 @@
 					cylinder_mirrorArray: this.cylinder_mirrorArray_bk,
 					ball_mirrorArray: this.ball_mirrorArray_bk
 				})
-				//console.log(this.photometric, "myvalue", this.myValue);
-				// //console.log(this.myValue)
-				// let gets = this.myValue.slice()
 				this.scrollto = `addbtn${this.myValue.length}`
-				//console.log(this.scrollto, "到哪去")
 			},
 			//删除选中订单
 			removeTap(index) {
@@ -1409,7 +1327,6 @@
 
 			//提交
 			confirm() {
-				//console.log(this.number);
 				// 删除待付款物流方式缓存
 				uni.removeStorageSync('delivery');
 				if (this.preview) {
@@ -1418,14 +1335,6 @@
 					});
 					return;
 				}
-				//判断
-				// this.photometric =photometric
-				// ball_mirrorIndex:null,
-				// cylinder_mirrorIndex:null,
-				// axisIndex:null,
-				// ball_mirrorArray:[],
-				// cylinder_mirrorArray:[],
-				// axisArray:[],
 
 				//检查数据是否填完
 				if (!this.checkParam()) return;
@@ -1522,7 +1431,6 @@
 							sku_id: e.sku_id
 						})
 					})
-					//console.log(LensParam, "111")
 					// 加入购物车
 					if (this.type == 'join_cart') this.postJoinCart(LensParam)
 					//立即购买
@@ -1548,7 +1456,6 @@
 					//清空状态
 					this.myValue = []
 					this.getClickGoodsAdd()
-					console.error(this.goodsDetail.rimless,"rimless")
 					if (this.goodsDetail.rimless == 1) {
 						this.rimless = this.goodsDetail.rimless
 						this.getClickGoodsAdd({}, 1)
@@ -1636,12 +1543,10 @@
 					buyer_message: this.buyer_message,
 					rimless: this.rimless
 				}
-				//console.log(param, "parammmmmmmmmmm");
 				this.$api.sendRequest({
 					url: '/api/cart/add',
 					data: param,
 					success: res => {
-						//console.log(res);
 						var data = res.data;
 						if (data > 0) {
 							this.$util.showToast({

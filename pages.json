@@ -62,6 +62,19 @@
 				}
 			}
 		},
+		// 商品详情、限时折扣、预售
+		{
+			"path": "pages/goods/detail/tableDetail",
+			"style": {
+				// #ifdef H5
+				"navigationStyle": "custom",
+				// #endif
+				"navigationBarTitleText": "",
+				"app-plus":{
+					"softinputMode":"nothing"
+				}
+			}
+		},
 		{
 			"path": "pages/goods/list/list",
 			"style": {
