@@ -1,5 +1,5 @@
 {
-    "name" : "镜汇",
+    "name" : "万",
     "appid" : "__UNI__8AECDC0",
     "description" : "",
     "versionName" : "1.6.9",
@@ -137,7 +137,7 @@
     "quickapp" : {},
     /* 小程序特有相关 */
     "mp-weixin" : {
-        "appid" : "wxc843c1eb004d530e",
+        "appid" : "wxd5b599f8ed2565ca",
         "setting" : {
             "urlCheck" : true,
             "postcss" : true,

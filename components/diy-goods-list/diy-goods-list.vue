@@ -116,8 +116,8 @@ export default {
       //备份给跳转事件使用
       this.chooseId = item.sku_id;
       //是否是现片
-      const isXp = item.rimless == 0;
-      if (isXp) return this.$refs.chooseDetail.open();
+      // const isXp = item.rimless == 0;
+      // if (isXp) return this.$refs.chooseDetail.open();
       this.toDetail(0); //0 普通下单 1 表格下单
     },
     toDetail(e) {

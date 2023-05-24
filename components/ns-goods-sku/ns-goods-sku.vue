@@ -274,17 +274,21 @@
 
 
 				</view>
+				<!-- <button type="primary" style="">切换到二维表下单</button> -->
+	
 				<block v-if="type == 'wholesale_buy_now' || type == 'wholesale_join_cart'">
-					<view class="footer" @click="confirm()">
+					<view class="footer">
 						<!-- <button type="primary" v-if="type == 'wholesale_join_cart' && goodsDetail.stock >= number && number >= minNumber">加入进货单</button> -->
-						<button type="primary">确定</button>
+						<button type="primary" v-if="goodsDetail.rimless != 1" style="background-color: #ffb644;" @click="changeTableOrder">切换二维表录入</button>
+						<button type="primary" @click="confirm()">确认光度</button>
 						<!-- <button type="primary" v-else disabled="true">库存不足</button> -->
 					</view>
 				</block>
 				<block v-else>
-					<view class="footer" @click="confirm()">
+					<view class="footer">
 						<!-- <button type="primary" v-if="type == 'wholesale_join_cart' && goodsDetail.stock >= number && number >= minNumber">加入进货单</button> -->
-						<button type="primary">确定</button>
+						<button type="primary"  v-if="goodsDetail.rimless != 1"  style="background-color: #ffb644;"  @click="changeTableOrder">切换二维表录入</button>
+						<button type="primary" @click="confirm()">确认光度</button>
 						<!-- <button type="primary" v-else disabled="true">库存不足</button> -->
 					</view>
 				</block>
@@ -407,7 +411,10 @@
 				}
 			}
 		},
-		methods: {
+	methods: {
+			changeTableOrder() { 
+				this.$emit('changeTableOrder')
+			},
 			goodsDetailChange(newData) {
 				this.skuId = newData.sku_id;
 				if (this.goodsDetail.luminosity_status != 1) this.setBalllist()
@@ -1543,6 +1550,7 @@
 					buyer_message: this.buyer_message,
 					rimless: this.rimless
 				}
+				
 				this.$api.sendRequest({
 					url: '/api/cart/add',
 					data: param,
@@ -2047,6 +2055,7 @@
 	}
 
 	.sku-layer .footer {
+		font-weight: bold;
 		height: 100rpx;
 		width: 100%;
 		position: absolute;
@@ -2058,6 +2067,7 @@
 		align-items: flex-start;
 
 		button {
+			margin: 0 15rpx;
 			width: 100%;
 			height: 80rpx;
 		}

@@ -1,0 +1,125 @@
+page{
+  overflow: hidden;
+}
+.tableDetail {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  .head {
+    overflow-x: scroll;
+    margin: 20rpx;
+    display: flex;
+    justify-content: space-between;
+
+    .btn-box {
+      display: flex;
+      border-radius: 100rpx;
+      background-color: #fff;
+
+      .btn {
+        white-space: nowrap;
+        border-radius: 100rpx;
+        // width: 120rpx;
+        padding: 0rpx 20rpx;
+        height: 60rpx;
+        line-height: 60rpx;
+        text-align: center;
+      }
+
+      .btn.active {
+        background-color: red;
+        color: #fff;
+      }
+    }
+  }
+
+  .table {
+    width: 100%;
+    flex: 1;
+    overflow: scroll;
+    background-color: #ffffff;
+    // padding-bottom: 180rpx;
+    .tLogo{
+      position: sticky;
+      top:0;
+      left: 0;
+      z-index: 10;
+    }
+    // border-radius: 80rpx;
+    .th {
+      display: inline-flex;
+      position: -webkit-sticky;
+      position: sticky;
+      top: 0rpx;
+      white-space: nowrap;
+
+      .td {
+        min-width: 120rpx;
+        height: 80rpx;
+        line-height: 80rpx;
+        text-align: center;
+        border: 2rpx solid #d4dbe9;
+
+        input {
+          // border: 1px solid;
+          height: 100%;
+        }
+
+        // background-color: #fff;
+      }
+
+      .td.active {
+        // background-color: blue;
+        border: 2rpx solid red; //#1fbb7d;
+      }
+    }
+
+    .tr {
+      background-color: #f5f7f9;
+      color: #444e63;
+      position: sticky;
+      top: 0rpx;
+      left: 0rpx;
+    }
+    .flex{
+      flex:1;
+    }
+  }
+
+  .orderView {
+    // position: relative;
+    width: 100%;
+    height: 180rpx;
+    bottom: 0;
+    left: 0;
+    background: #f5f7f9;
+
+    .left {
+      line-height: 150rpx;
+      font-size: 30rpx;
+      margin-left: 50rpx;
+      margin-bottom: 30rpx;
+      color: #444e63;
+
+      text {
+        margin: 0 15rpx;
+        font-size: 40rpx;
+        color: red;
+      }
+    }
+
+    .orderBtn {
+      position: fixed;
+      right: 50rpx;
+      bottom: 60rpx;
+      right: 50rpx;
+      width: 200rpx;
+      height: 80rpx;
+      background-color: red; // #1fbb7d;
+      color: #fff;
+      text-align: center;
+      line-height: 80rpx;
+      border-radius: 80rpx;
+    }
+  }
+}

@@ -108,14 +108,14 @@
 
         <view class="newdetail margin-bottom">
           <!-- 已选规格 -->
-          <view class="item selected-sku-spec" v-if="goodsSkuDetail.sku_spec_format" @click="joinCart">
+          <!-- <view class="item selected-sku-spec" v-if="goodsSkuDetail.sku_spec_format" @click="joinCart">
             <view class="label">选择</view>
             <view class="box">
               <text v-for="(item, index) in goodsSkuDetail.sku_spec_format" :key="index">{{ item.spec_name }}/{{ item.spec_value_name }}</text>
             </view>
             <text class="iconfont iconright"></text>
-            <!-- <view class="img-wrap"><image :src="$util.img('upload/uniapp/goods/detail_more.png')" mode="aspectFit" /></view> -->
-          </view>
+            <view class="img-wrap"><image :src="$util.img('upload/uniapp/goods/detail_more.png')" mode="aspectFit" /></view>
+          </view> -->
           <view class="item coupon" v-if="preview == 0 && couponList.length" @click="openCouponPopup()">
             <view class="label">领券</view>
             <view class="coupon-list">
@@ -475,7 +475,7 @@
 
         <!-- SKU选择 -->
         <!-- @refresh="refreshGoodsSkuDetail" -->
-        <ns-goods-sku ref="goodsSku" :goods-detail="goodsSkuDetail" :max-buy="goodsSkuDetail.max_buy" @error="errorDo" @refresh="refreshGoodsSkuDetail" :min-buy="goodsSkuDetail.min_buy"></ns-goods-sku>
+        <ns-goods-sku ref="goodsSku" :goods-detail="goodsSkuDetail" :max-buy="goodsSkuDetail.max_buy" @error="errorDo" @refresh="refreshGoodsSkuDetail" :min-buy="goodsSkuDetail.min_buy" @changeTableOrder="changeTableOrder"/>
 
         <!-- 海报 -->
         <view @touchmove.prevent.stop>
@@ -572,16 +572,27 @@
             @click="buyNow"
             v-if="goodsSkuDetail.photometric == 0 && goodsSkuDetail.luminosity_status != 1"
           />
-
-          <view
+          <!-- <ns-goods-action-button
+            :class="['goods-action-button', isiPhone12 ? 'iPhone12' : '', goodsSkuDetail.is_virtual == 0 ? 'active1' : '']"
+            text="二维表下单"
+            @click="isXp=1"
+            v-if="(goodsSkuDetail.photometric != 0 || goodsSkuDetail.luminosity_status == 1) && goodsSkuDetail.rimless == 0"
+            background="color-join-cart"
+          /> -->
+          <ns-goods-action-button
             v-if="goodsSkuDetail.photometric != 0 || goodsSkuDetail.luminosity_status == 1"
+            :class="['goods-action-button', isiPhone12 ? 'iPhone12' : '', goodsSkuDetail.is_virtual == 0 ? 'active2' : 'active4']"
+            text="加入购物车"
+            @click="joinCart"
+          />
+          <!-- <view
+            v-else
             class="joinCartBtn"
             style="display: flex;flex: 1;background: #FFB644;color: #FFFFFF;border-radius: 999rpx;
 					 margin: 0 20rpx;justify-content: center;align-items: center;padding: 10rpx 0;"
-            @click="joinCart"
           >
             加入购物车
-          </view>
+          </view> -->
         </block>
         <block v-else><ns-goods-action-button class="goods-action-button active4" text="请先认证" @click="buyNowWholesaler" /></block>
       </template>
@@ -593,35 +604,65 @@
 
     <icon-kf />
   </view>
+
   <view class="tableDetail" v-else>
     <view class="head">
-      <!-- v-for="(item,index) in JSON.parse(goodsSkuDetail.goods_spec_format)" -->
-      <!-- {{ JSON.stringify(goodsSkuDetail.goods_spec_format) }} -->
       <view class="btn-box" v-for="(specItem, index) in goodsSkuDetail.goods_spec_format" :key="index">
-        <view :class="['btn', index == specIndex ? 'active' : '']" v-for="(item, index) in specItem.value" @click="specIndex = index">{{ item.spec_value_name }}</view>
+        <view :class="['btn', itemIndex == specIndex[index] ? 'active' : '']" v-for="(item, itemIndex) in specItem.value" @click="changeChooseIndex(index,itemIndex,item)">{{ item.spec_value_name }}{{ true?item.sku_id:'' }}</view>
       </view>
-      <!-- <view class="btn-box">
-				<view class="btn">近视</view>
-				<view class="btn">老花</view>
-			</view> -->
     </view>
     <!-- <diy-table /> -->
-    <view class="table">
-      <view class="th">
-        <!-- <view class="td tr"></view> -->
-        <view class="td tr" v-for="(item, index) in thead_list" :key="index">{{ item }}</view>
+    <view class="table" :style="{height:`${tableHeight}rpx`}">
+      <view class="th" style="z-index:10;">
+        <view :class="['td', 'tr',index>0?'flex':'tLogo']" v-for="(item, index) in thead_list" :key="index">{{ index==0?"S\C":item>0?`+${item}`:item }}</view>
       </view>
       <view class="th" v-for="(row, row_index) in table_list" :key="row_index">
         <view
-          :class="['td', col_index == 0 ? 'tr' : '', active_list.filter(item => item.row_index == row_index && item.col_index == col_index).length > 0 ? 'active' : '']"
+          :class="['td', col_index == 0 ? 'tr' : 'flex', active_list.filter(item => item.row_index == row_index && item.col_index == col_index).length > 0 ? 'active' : '']"
+          :style="{zIndex:col_index==0?'10':'1'}"
           v-for="(col, col_index) in row"
           :key="col_index"
           @click="handleClickChoose({ row_index, col_index, col, row })"
         >
-          {{ row_index }},{{ col_index }}{{ col }}
+          <input v-model="table_list[row_index][col_index]" type="number" v-if="active_list.filter(item => item.row_index == row_index && item.col_index == col_index).length > 0"/>
+          <text v-else-if="col && col_index != 0">{{col}}</text>
+          <text v-if="col_index == 0">{{ parseFloat(col)>0?`+${col}`:col }}</text>
         </view>
       </view>
     </view>
+    <view class="orderView">
+      <view class="left">总计：<text>{{ jpSum }}</text>片</view>
+      <view class="orderBtn" @click="handleClickBuyNow">
+        <text v-if="goodsSkuDetail.goods_state == 1 && goodsSkuDetail.verify_state == 1">
+          <text v-if="goodsSkuDetail.stock == 0 && !goodsSkuDetail.sku_spec_format">
+            <text disabled-text="库存不足" :disabled="true" />
+          </text>
+          <text v-else-if="goodsSkuDetail.max_buy != 0 && goodsSkuDetail.purchased_num >= goodsSkuDetail.max_buy">
+            <text disabled-text="已达最大限购数量" :disabled="true" />
+          </text>
+
+          <text v-else-if="is_wholesaler == 3">
+            <text
+              text="加入购物车"
+              v-if="goodsSkuDetail.is_virtual == 0 && goodsSkuDetail.photometric == 0 && goodsSkuDetail.luminosity_status != 1"
+            />
+            <text
+              text="立即购买"
+              v-if="goodsSkuDetail.photometric == 0 && goodsSkuDetail.luminosity_status != 1"
+            />
+
+            <text
+              v-if="goodsSkuDetail.photometric != 0 || goodsSkuDetail.luminosity_status == 1"
+            >
+              加入购物车
+            </text>
+          </text>
+          <block v-else><text text="请先认证" @click="buyNowWholesaler" /></block>
+        </text>
+        <text v-if="noLogin">请先登陆</text>
+      </view>
+    </view>
+    <ns-login ref="login"></ns-login>
   </view>
 </template>
 

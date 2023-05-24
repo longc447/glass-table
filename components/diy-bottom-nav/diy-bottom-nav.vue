@@ -18,7 +18,6 @@
 </template>
 
 <script>
-	import diyBottomNav from '@/components/diy-bottom-nav/diy-bottom-nav.vue';
 export default {
 	name: 'diy-bottom-nav',
 	props: {

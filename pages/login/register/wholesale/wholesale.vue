@@ -88,7 +88,7 @@
       </view>
     </view>
 
-    <view class="input-wrap">
+    <view class="input-wrap" v-if="globalConfig.isChooseKf">
       <view><text>服务客服:</text></view>
       <view>
         <!-- <input v-model="mobile" type="number" placeholder="请选择服务店铺" /> -->
@@ -125,6 +125,7 @@
 
 <script>
 import pickRegions from '@/components/pick-regions/pick-regions.vue';
+import globalConfig from '@/common/js/config'
 export default {
   components: { pickRegions },
   data() {
@@ -156,7 +157,6 @@ export default {
   methods: {
     handleChangeSite(e) {
       this.site_item = this.site_list[e.target.value];
-      console.log(e, 'site');
     },
     toIndex() {
       uni.reLaunch({
@@ -170,7 +170,6 @@ export default {
         url: '/api/member/detail',
         async: false,
       });
-      console.log(res);
       if (res.code == 0) {
         this.show = res.is_wholesaler;
       }
@@ -206,12 +205,11 @@ export default {
       } else if (!this.license) {
         this.msg('请上传营业执照');
         return;
-      } else if (!this.site_item.site_id) {
+      } else if (!this.site_item.site_id && globalConfig.isChooseKf) {
         this.msg('请选择服务客服');
         return;
       }
 
-      console.log(this.region);
       this.$api.sendRequest({
         url: '/api/member/addWholesaler',
         data: {
@@ -230,7 +228,6 @@ export default {
         },
         success: res => {
           if (res.code > 0) {
-            console.log(res);
             this.msg(res.message);
             setTimeout(() => {
               uni.navigateBack();
@@ -242,16 +239,12 @@ export default {
       });
     },
     uploadFn(e) {
-      console.log(e);
       this.$util.upload(
         1,
         {
           path: 'chatimg',
         },
         res => {
-          console.log(res);
-          //this.license = res[0]
-
           switch (e) {
             case 'license_front':
               this.license_front = res[0];

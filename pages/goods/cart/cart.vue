@@ -506,12 +506,13 @@ export default {
         let cart_ids = [];
         this.cartData.forEach(siteItem => {
           siteItem.cartList.forEach(item => {
+            console.log(item.eye,"item")
             if (item.checked) {
               cart_ids.push(item.cart_id);
             }
           });
         });
-
+        console.log(cart_ids.toString(),"=====")
         if (this.isSub) return;
         this.isSub = true;
 

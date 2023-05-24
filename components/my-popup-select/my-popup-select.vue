@@ -8,17 +8,17 @@
 							{{title}}
 						</view>
 						<view class="itemBox">
-							<view :class="['item',chooseIndex==index?'active':'']" v-for="(item,index) in list" :key="index" @click="chooseIndex=index">
+							<view :class="['item',chooseIndex==index?'active':'']" v-for="(item,index) in list" :key="index" @click="submit(index)">
 								{{item}}
 							</view>
 						</view>
 						<view class="btnBox">
-							<view class="btnCancel" @click="cancel()">
+							<!-- <view class="btnCancel" @click="cancel()">
 								取消
-							</view>
-							<view class="btnSubmit" @click="submit()">
+							</view> -->
+							<!-- <view class="btnSubmit" @click="submit()">
 								确定
-							</view>
+							</view> -->
 						</view>
 				</view>
 			</scroll-view>
@@ -47,7 +47,7 @@
 			};
 		},
 		mounted() {
-			// console.error(this.range,"title的数据");
+			console.error(this.range,"title的数据");
 			
 			this.list = this.range
 		},
@@ -56,23 +56,20 @@
 				this.chooseIndex = -1
 				this.$refs.mypopup.close();
 			},
-			submit() {
-				
-				console.log(this.list[this.chooseIndex],"this.values");
-				if(this.chooseIndex == undefined){
-					uni.showToast({
-						title:"没有选择内容",
-						icon:"none"
-					})
-					return;
-				}
+			submit(index) {
+				this.chooseIndex = index;
+				if (index === undefined) return uni.showToast({
+					title:"没有选择内容",
+					icon:"none"
+				})
 				const result = {
 					target : {
 						value : this.chooseIndex//this.range[this.chooseIndex]
 					}
 				}
-				this.$emit("change", result)
-				this.cancel();
+				this.$emit("change", result);
+				this.$refs.mypopup.close();
+				// this.cancel();
 			},
 			open() {
 				this.$refs.mypopup.open();

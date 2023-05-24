@@ -330,8 +330,11 @@ export default {
       }
 
       // 商品SKU格式
-      if (this.goodsSkuDetail.goods_spec_format) this.goodsSkuDetail.goods_spec_format = JSON.parse(this
-        .goodsSkuDetail.goods_spec_format);
+      if (this.goodsSkuDetail.goods_spec_format) {
+        this.goodsSkuDetail.goods_spec_format = JSON.parse(this
+          .goodsSkuDetail.goods_spec_format);
+        this.specIndex = new Array(this.goodsSkuDetail.goods_spec_format.length).fill(0);
+      }
 
       this.$langConfig.title(this.goodsSkuDetail.goods_name);
 

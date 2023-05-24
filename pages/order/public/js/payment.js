@@ -101,7 +101,7 @@ export default {
 			if (location) {
 				this.orderCreateData = Object.assign(this.orderCreateData, location);
 			}
-
+console.error(this.orderCreateData,"this.orderCreateData")
 			this.$api.sendRequest({
 				url: '/api/ordercreate/payment',
 				data: this.orderCreateData,
@@ -830,6 +830,7 @@ export default {
 		},
 	},
 	onShow() {
+		console.log(this.orderPaymentData.shop_goods_list)
 		// 刷新多语言
 		this.$langConfig.refresh();
 
