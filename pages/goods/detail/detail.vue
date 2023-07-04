@@ -773,6 +773,10 @@ export default {
 @import './tableDetail.scss';
 </style>
 <style scoped>
+.goods-detail{
+  height: 83vh;
+  overflow-y: scroll;
+}
 .richText /deep/ image {
   max-width: 100% !important;
 }
