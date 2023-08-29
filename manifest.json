@@ -1,5 +1,5 @@
 {
-    "name" : "万",
+    "name" : "完美",
     "appid" : "__UNI__8AECDC0",
     "description" : "",
     "versionName" : "1.6.9",
@@ -137,7 +137,7 @@
     "quickapp" : {},
     /* 小程序特有相关 */
     "mp-weixin" : {
-        "appid" : "wxd5b599f8ed2565ca",
+        "appid" : "wx4756a99aade5d735",
         "setting" : {
             "urlCheck" : true,
             "postcss" : true,

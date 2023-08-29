@@ -608,7 +608,7 @@
   <view class="tableDetail" v-else>
     <view class="head">
       <view class="btn-box" v-for="(specItem, index) in goodsSkuDetail.goods_spec_format" :key="index">
-        <view :class="['btn', itemIndex == specIndex[index] ? 'active' : '']" v-for="(item, itemIndex) in specItem.value" @click="changeChooseIndex(index,itemIndex,item)">{{ item.spec_value_name }}{{ true?item.sku_id:'' }}</view>
+        <view :class="['btn', itemIndex == specIndex[index] ? 'active' : '']" v-for="(item, itemIndex) in specItem.value" @click="changeChooseIndex(index,itemIndex,item)">{{ item.spec_value_name }}</view>
       </view>
     </view>
     <!-- <diy-table /> -->
