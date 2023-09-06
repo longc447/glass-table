@@ -33,7 +33,7 @@
 
 /* 侧边导航 */
 .oneScroll {
-	width: 164rpx;
+	width: 224rpx;
 	height: 100%;
 	background-color: $color-bg;
 
@@ -46,6 +46,9 @@
 		line-height: 100rpx;
 		font-size: $font-size-sub;
 		color: $color-title;
+		text-overflow: ellipsis;
+		overflow-x: hidden;
+		white-space: nowrap;
 	}
 
 	.oneScroll-item.active {
