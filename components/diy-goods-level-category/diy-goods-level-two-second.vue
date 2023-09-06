@@ -257,12 +257,12 @@ export default {
 
 //三列默认布局
 .twoScroll-list {
-    padding: 0 34rpx;
+    // padding: 0 34rpx;
     overflow: hidden;
 
     .twoScroll-item {
-      margin: 0 60rpx 40rpx 0;
-      width: 114rpx;
+      // margin: 0 60rpx 40rpx 0;
+      width: 156rpx;
       display: inline-block;
       text-align: center;
       line-height: 1;

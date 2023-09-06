@@ -9,7 +9,7 @@
 /**
  * 镜片一站式采购平台
  */
-const second = "wanmei";
+const second = "jiwei";
 const url = `https://${second}.tongzhounetwork.ltd`;
 const x = {
   // baseUrl: 'https://jqh.tongzhounetwork.ltd',

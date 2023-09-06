@@ -1,5 +1,5 @@
 {
-    "name" : "完美",
+    "name" : "jiwei",
     "appid" : "__UNI__8AECDC0",
     "description" : "",
     "versionName" : "1.6.9",
@@ -137,7 +137,7 @@
     "quickapp" : {},
     /* 小程序特有相关 */
     "mp-weixin" : {
-        "appid" : "wx4756a99aade5d735",
+        "appid" : "wxde6b7bf08a4be933",
         "setting" : {
             "urlCheck" : true,
             "postcss" : true,

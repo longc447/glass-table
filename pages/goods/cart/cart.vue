@@ -2,7 +2,7 @@
   <view :data-theme="themeStyle" class="allPage" :class="{ bottom: hasData }">
     <scroll-view class="container" :scroll-x="true" :show-scrollbar="false">
       <block v-if="hasData">
-        <view class="cart-wrap" v-for="(siteItem, siteIndex) in cartData" :key="siteIndex">
+        <view class="cart-wrap" v-for="(siteItem, siteIndex) in cartData" :key="siteIndex" style="max-height: 80vh; overflow-y: scroll">
           <view class="cart-header">
             <view class="iconfont" :class="siteItem.checked ? 'iconyuan_checked color-base-text' : 'iconyuan_checkbox'" @click="siteAllElection(!siteItem.checked, siteIndex)"></view>
             <view class="iconfont icondianpu"></view>
@@ -26,7 +26,7 @@
 								</view> -->
                 <view class="goods-info">
                   <view @click="toGoodsDetail(item)" class="goods-name">
-                    <text style="font-size: 35rpx;font-weight: bold;">{{ item.goods_name }}</text>
+                    <text style="font-size: 35rpx; font-weight: bold">{{ item.goods_name }}</text>
                   </view>
                   <view class="sku" v-if="item.sku_spec_format">
                     <view class="goods-spec">
@@ -83,7 +83,7 @@
                 <view class="iconfont iconyuan_checked color-tip"></view>
                 <view class="goods-img"><image :src="$util.img(goodsItem.sku_image, { size: 'mid' })" mode="aspectFill"></image></view>
                 <view class="goods-info">
-                  <view class="goods-name" style="font-size: 50rpx;font-weight: bold;">{{ goodsItem.sku_name }}</view>
+                  <view class="goods-name" style="font-size: 50rpx; font-weight: bold">{{ goodsItem.sku_name }}</view>
                   <view class="sku">
                     <view class="goods-spec">
                       <block v-for="(x, i) in goodsItem.sku_spec_format" :key="i">{{ x.spec_value_name }} {{ i < goodsItem.sku_spec_format.length - 1 ? '; ' : '' }}</block>
@@ -234,7 +234,7 @@ export default {
     },
   },
   watch: {
-    storeToken: function(nVal, oVal) {
+    storeToken: function (nVal, oVal) {
       this.getCartData();
     },
   },
@@ -506,13 +506,13 @@ export default {
         let cart_ids = [];
         this.cartData.forEach(siteItem => {
           siteItem.cartList.forEach(item => {
-            console.log(item.eye,"item")
+            console.log(item.eye, 'item');
             if (item.checked) {
               cart_ids.push(item.cart_id);
             }
           });
         });
-        console.log(cart_ids.toString(),"=====")
+        console.log(cart_ids.toString(), '=====');
         if (this.isSub) return;
         this.isSub = true;
 
@@ -888,15 +888,15 @@ export default {
 }
 
 .cart-bottom {
-  position: fixed;
+  // position: fixed;
   z-index: 5;
   width: 100vw;
-  height: 100rpx;
+  // height: 80rpx;
   background: #fff;
-  bottom: var(--window-bottom);
+  // bottom: var(--window-bottom);
   overflow: hidden;
   display: flex;
-  bottom: 56rpx;
+  // bottom: 56rpx;
   z-index: 9;
 
   .all-election {

@@ -4,9 +4,9 @@
 /* 单行超出隐藏 */
 .using-hidden {
 	display: block;
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
+	// white-space: nowrap;
+	// overflow: hidden;
+	// text-overflow: ellipsis;
 }
 /* 多行超出隐藏 */
 .multi-hidden {
@@ -33,7 +33,7 @@
 
 /* 侧边导航 */
 .oneScroll {
-	width: 160rpx;
+	width: 164rpx;
 	height: 100%;
 	background-color: $color-bg;
 

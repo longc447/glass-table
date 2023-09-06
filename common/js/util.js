@@ -497,10 +497,15 @@ export default {
 		let isIphoneX = false;
 		let systemInfo = uni.getSystemInfoSync();
 		// #ifdef MP
-		if (systemInfo.model.search('iPhone X') != -1 || systemInfo.model.search('iPhone 11') != -1 || systemInfo.model.search(
-				'iPhone12') != -1) {
-			isIphoneX = true;
-		}
+		if (
+      systemInfo.model.search("iPhone X") != -1 ||
+      systemInfo.model.search("iPhone 11") != -1 ||
+      systemInfo.model.search("iPhone12") != -1 ||
+      systemInfo.model.search("iPhone13") != -1 ||
+      systemInfo.model.search("iPhone14") != -1
+    ) {
+      isIphoneX = true
+    }
 		// #endif
 
 		// #ifdef H5
