@@ -22,7 +22,7 @@
         </view>
         <view :class="{ 'color-base-text': orderType === 'screen' }" class="screen-wrap">
           <view class="iconfont font-size-base" :class="{ iconapps: isList, iconlist1: !isList }" @click="changeListStyle()"></view>
-          <text style="padding: 0 14rpx; color: #E3E3E3;">|</text>
+          <text style="padding: 0 14rpx; color: #e3e3e3">|</text>
           <text @click="sortTabClick('screen')">筛选</text>
           <view @click="sortTabClick('screen')" class="iconfont-wrap"><view class="iconfont iconshaixuan color-tip"></view></view>
         </view>
@@ -37,6 +37,7 @@
             <view class="info-wrap">
               <view class="name-wrap">
                 <view class="goods-name">{{ item.goods_name }}</view>
+                <view style="color: #bc6e71">{{ item.goods_subtitle ? item.goods_subtitle : '' }}</view>
               </view>
               <view class="pro-info">
                 <!-- <view class="delete-price font-size-activity-tag color-tip">
