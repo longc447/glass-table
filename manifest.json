@@ -1,5 +1,5 @@
 {
-    "name" : "jiwei",
+    "name" : "",
     "appid" : "__UNI__8AECDC0",
     "description" : "",
     "versionName" : "1.6.9",
@@ -16,7 +16,7 @@
             "delay" : 0
         },
         "compatible" : {
-            "ignoreVersion" : true //true表示忽略版本检查提示框，HBuilderX1.9.0及以上版本支持  
+            "ignoreVersion" : true //true表示忽略版本检查提示框，HBuilderX1.9.0及以上版本支持
         },
         /* 模块配置 */
         "modules" : {
@@ -182,7 +182,7 @@
             "mode" : "history",
             "base" : "/h5"
         },
-        "title" : "天铂光学",
+        "title" : "",
         "domain" : "https://cs.b2b2c.niuteam.cn"
     },
     "_spaceID" : "09049964-7ac5-4595-b82a-ddf42b0ba1c2"
