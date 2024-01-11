@@ -173,6 +173,7 @@ uni-page[data-page='otherpages/index/city/city'] {
 html {
   max-width: 400px; 
   position:fixed;
+  overflow: scroll;
   height: 100%;
   left: 50% !important;
   right: 50% !important;
