@@ -4,12 +4,12 @@
 			<view class="search-bg">
 				<!-- <image src="../../../"></image> -->
 				<input type="text" placeholder="输入订单号搜索" v-model="searchWord" confirm-type="search"></input>
-			
-			<view @tap="searchOrder">搜索</view>
+
+				<view @tap="searchOrder">搜索</view>
 			</view>
 		</view>
 		<view class="order-nav">
-			
+
 			<view v-for="(statusItem, statusIndex) in statusList" :key="statusIndex" class="uni-tab-item"
 				:id="statusItem.id" :data-current="statusIndex" @click="ontabtap">
 				<text class="uni-tab-item-title"
@@ -18,8 +18,8 @@
 				</text>
 			</view>
 		</view>
-		
-		
+
+
 
 		<mescroll-uni ref="mescroll" @getData="getListData" top="180rpx">
 			<block slot="list">
@@ -35,12 +35,14 @@
 							<text class="site-name"
 								@click="toShopDetail(orderItem.site_id)">{{ orderItem.site_name }}</text>
 							<view class="iconfont iconright" @click="toShopDetail(orderItem.site_id)"></view>
-							<text class="status-name color-base-text">{{ orderItem.order_status_name }}</text>
+							<text class="rate-price color-base-text" v-if="orderItem.rate_price > 0"> 来架加工 </text>
+							<text class="status-name color-base-text">
+								{{ orderItem.order_status_name }}
+							</text>
 						</view>
 						<view class="order-body" @click="orderDetail(orderItem)">
 							<view class="goods-wrap" v-for="(goodsItem, goodsIndex) in orderItem.order_goods"
-							style="border-top: 2rpx solid #F1F1F1;"
-								:key="goodsIndex">
+								style="border-top: 2rpx solid #F1F1F1;" :key="goodsIndex">
 								<!-- <view class="goods-img">
 									<image
 										:src="$util.img(goodsItem.sku_image, { size: 'mid' })"
@@ -51,22 +53,38 @@
 								</view> -->
 								<view class="goods-info" :style="{'max-width':'100%'}">
 									<view class="pro-info">
-										<view class="goods-name"  style="font-size: 35rpx;font-weight: bold;">
-											{{luminosity_status==1?goodsItem.goods_name:goodsItem.sku_name }}</view>
+										<view class="goods-name" style="font-size: 35rpx;font-weight: bold;">
+											{{luminosity_status==1?goodsItem.goods_name:goodsItem.sku_name }}
+										</view>
 										<view class="sku"> <!-- v-if="goodsItem.sku_spec_format" -->
 											<view class="goods-spec" v-if="goodsItem.photometric!=0">
 												<block v-for="(x, i) in goodsItem.sku_spec_format" :key="i">
 													{{ x.spec_value_name }}
 													{{ i < goodsItem.sku_spec_format.length - 1 ? '; ' : '' }}
 												</block>
-											
-											<sku-list :goodsItem="goodsItem"></sku-list>
-											
+
+												<sku-list :goodsItem="goodsItem"></sku-list>
+
+											</view>
+											<view class="goods-spec" v-else>
+												<text
+													style="font-size: 3vw;color: rgb(160,160,160);margin-right: 1vw;">左右眼：{{goodsItem.eye == '左眼' ? 'L' : 'R'}}</text>
+												<text
+													style="font-size: 3vw;color: rgb(160,160,160);margin-right: 1vw;">球镜：{{goodsItem.ball_mirror}}</text>
+												<text
+													style="font-size: 3vw;color: rgb(160,160,160);margin-right: 1vw;">柱镜：{{goodsItem.cylinder_mirror}}</text>
+												<text
+													style="font-size: 3vw;color: rgb(160,160,160);">轴位：{{goodsItem.axis}}</text>
+												<text style="font-size: 3vw;color: rgb(160,160,160);"
+													v-if="goodsItem.a_dd">ADD：{{goodsItem.a_dd}}</text>
+												<text style="font-size: 3vw;color: rgb(160,160,160);"
+													v-if="goodsItem.passage">通道：{{goodsItem.passage}}</text>
 											</view>
 										</view>
 									</view>
 									<view class="goods-sub-section">
-										<text class="goods-price" v-if="(goodsItem.price > 0 && goodsItem.is_photograph==1) || goodsItem.is_photograph!=1">
+										<text class="goods-price"
+											v-if="(goodsItem.price > 0 && goodsItem.is_photograph==1) || goodsItem.is_photograph!=1">
 											<text
 												class="unit color-base-text font-size-activity-tag">{{ $lang('common.currencySymbol') }}</text>
 											<text class="color-base-text">{{ goodsItem.price }}</text>
@@ -77,21 +95,30 @@
 										</text>
 									</view>
 									
+									<view class="rate_price" v-if="goodsItem.rate_price > 0">
+										<view class="box color-base-text">
+											<text class="operator">来架加工费：</text>
+											<text class="unit">{{ $lang('common.currencySymbol') }}</text>
+											<text class="money">{{ goodsItem.rate_price }}</text>
+										</view>
+									</view>
+
 									<view class="goods-sub-section">{{ goodsItem.remarks }}</view>
-									
+
 									<text class="tip" v-if="goodsItem.is_present">赠品</text>
 									<view class="goods-operation"></view>
 								</view>
 							</view>
-							
-							
-							
+
+
+
 							<view class="" style="margin: 0 40rpx;">
-								<image :src="item" v-for="(item,index) in orderItem.images" mode="" style="width: 100rpx;height:100rpx;margin-right:20rpx;"></image>
+								<image :src="item" v-for="(item,index) in orderItem.images" mode=""
+									style="width: 100rpx;height:100rpx;margin-right:20rpx;"></image>
 							</view>
-							
+
 						</view>
-						
+
 						<view class="order-footer">
 							<view class="order-base-info" v-if="orderItem.is_photograph!=1">
 								<view class="total">
@@ -103,15 +130,15 @@
 									</text>
 								</view>
 							</view>
-							
+
 							<view class="order-base-info">
 								<view class="total">
 									<text class="font-size-sub">地址：{{ orderItem.full_address}}</text>
 								</view>
 							</view>
-							
-							
-							
+
+
+
 							<view class="order-action" v-if="orderItem.action.length > 0">
 								<view class="order-box-btn"
 									v-if="evaluateConfig.evaluate_status == 1 && orderItem.is_evaluate == 1"
@@ -134,7 +161,7 @@
 									<text v-else-if="orderItem.evaluate_status == 1">追评</text>
 								</view>
 							</view>
-							
+
 							<view class="order-action" v-else>
 								<view class="order-box-code">订单号：{{orderItem.order_no}}</view>
 								<view class="order-box-btn color-base-border color-base-text"
@@ -170,7 +197,7 @@
 	export default {
 		data() {
 			return {
-				luminosity_status:1,
+				luminosity_status: 1,
 				scrollInto: '',
 				orderStatus: 'all',
 				statusList: [],
@@ -186,7 +213,7 @@
 				orderData: {},
 				payMoney: 0,
 				payMoneyMerge: 0,
-				searchWord:''
+				searchWord: ''
 			};
 		},
 		components: {
@@ -198,7 +225,7 @@
 			 * @param {Object} money
 			 */
 			moneyFormat(money) {
-				console.log(money,"=======>",parseFloat(money).toFixed(2))
+				console.log(money, "=======>", parseFloat(money).toFixed(2))
 				return parseFloat(money).toFixed(2);
 			}
 		},
@@ -206,7 +233,7 @@
 		onLoad(option) {
 			if (option.status) this.orderStatus = option.status;
 		},
-		
+
 		onShow() {
 			// 刷新多语言
 			this.searchWord = '';
@@ -231,19 +258,19 @@
 				this.$refs.loadingCover.show();
 				this.$refs.mescroll.refresh();
 			},
-			searchOrder(){
+			searchOrder() {
 				this.$refs.mescroll.refresh();
 				this.getListData();
 			},
 			getListData(mescroll) {
-				let _this=this
+				let _this = this
 				this.$api.sendRequest({
 					url: '/api/order/lists',
 					data: {
 						page: mescroll.num,
 						page_size: mescroll.size,
 						order_status: this.orderStatus,
-						search:this.searchWord
+						search: this.searchWord
 					},
 					success: res => {
 						let newArr = [];
@@ -261,8 +288,8 @@
 						this.orderList = this.orderList.concat(newArr); //追加新数据
 						this.orderList.forEach(v => {
 							// v.order_goods.forEach(vo => {
-								console.log(v.images,"vooooooooooo");
-								if(v.images) v.images= JSON.parse(v.images)
+							console.log(v.images, "vooooooooooo");
+							if (v.images) v.images = JSON.parse(v.images)
 							// 	if (vo.image) {
 							// 		try {
 							// 			vo.image = JSON.parse(vo.image);
@@ -327,9 +354,61 @@
 						});
 						break;
 					case 'memberTakeDelivery': //收货
-						this.orderDelivery(orderData.order_id, () => {
-							this.$refs.mescroll.refresh();
-						});
+						//拉起确认收货组件
+						if (orderData.pay_type == 'wechatpay') {
+							if (orderData.is_takedelivery == 1){
+								if (wx.openBusinessView) {
+									wx.openBusinessView({
+										businessType: 'weappOrderConfirm',
+										extraData: {
+											merchant_id: orderData.merchant_id,
+											merchant_trade_no: orderData.out_trade_no,
+											transaction_id: orderData.transaction_id
+										},
+										complete: e => {
+											if (e.extraData.status === 'success') {
+												// 用户确认收货成功，再执行自己的代码
+												this.$api.sendRequest({
+													url: '/api/order/takedelivery',
+													data: {
+														order_id: orderData.order_id
+													},
+													success: res => {
+														this.$util.showToast({
+															title: res.message
+														})
+														this.$refs.mescroll.refresh();
+													}
+												})
+											} else if (e.extraData.status === 'fail') {
+												// 用户确认收货失败
+												this.$util.showToast({
+													title: '确认收货失败!'
+												})
+											} else if (e.extraData.status === 'cancel') {
+												// 用户取消
+												this.$util.showToast({
+													title: '取消确认收货!'
+												})
+											}
+										}
+									});
+								} else {
+									//引导用户升级微信版本
+									this.$util.showToast({
+										title: '请升级微信版本'
+									})
+								}
+							} else {
+								this.orderDelivery(orderData.order_id, () => {
+									this.$refs.mescroll.refresh();
+								});
+							}
+						} else {
+							this.orderDelivery(orderData.order_id, () => {
+								this.$refs.mescroll.refresh();
+							});
+						}
 						break;
 					case 'trace': //查看物流
 						this.$util.redirectTo('/pages/order/logistics/logistics', {
@@ -453,11 +532,21 @@
 	@import '../public/css/list.scss';
 </style>
 <style scoped>
+	.rate-price {
+		margin-left: 15rpx;
+	}
+
 	/deep/ .uni-page {
 		overflow: hidden;
 	}
 
 	/deep/ .mescroll-upwarp {
 		padding-bottom: 100rpx;
+	}
+	.rate_price{
+		width: 100%;
+		justify-content: flex-end;
+		display: flex;
+		padding-top: .5rem;
 	}
 </style>

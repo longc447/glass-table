@@ -62,7 +62,7 @@
 					<text>*</text>
 				</text>
 				<pick-regions @getRegion="handleGetRegion">
-					<text>{{addressValue ? addressValue : '请选择所在地区'}}</text>
+					<text>{{addressValues ? addressValues : '请选择所在地区'}}</text>
 				</pick-regions>
 			</view>
 			<view class="edit-item">
@@ -109,6 +109,7 @@ export default {
 			},
 			address: '',
 			addressValue: '',
+			addressValues: '',
 			back: '/otherpages/member/address/address', // 返回页
 			redirect: 'redirectTo', // 跳转方式
 			flag: false, //防重复标识
@@ -180,6 +181,7 @@ export default {
 						this.addressValue += res.data.district_id != undefined ? '-' + res.data.district_id : '';
 						this.localType = data.type;
 						this.defaultRegions = [data.province_id, data.city_id, data.district_id];
+						this.addressValues = this.formData.full_address;
 					}
 					if (this.$refs.loadingCover) this.$refs.loadingCover.hide();
 				},
@@ -205,6 +207,7 @@ export default {
 						this.addressValue += res.data.province_id != undefined ? res.data.province_id : '';
 						this.addressValue += res.data.city_id != undefined ? '-' + res.data.city_id : '';
 						this.addressValue += res.data.district_id != undefined ? '-' + res.data.district_id : '';
+						this.addressValues = this.formData.full_address;
 						console.log(this.addressValue)
 					} else {
 						this.showToast({
@@ -225,6 +228,7 @@ export default {
 			this.addressValue += regions[0] != undefined ? regions[0].name : '';
 			this.addressValue += regions[1] != undefined ? '-' + regions[1].name : '';
 			this.addressValue += regions[2] != undefined ? '-' + regions[2].name : '';
+			this.addressValues = this.formData.full_address;
 			 // this.addressValue =region
 		},
 

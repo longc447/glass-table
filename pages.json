@@ -812,6 +812,15 @@
 					}
 				},
 				{
+					"path": "goods/rate/rate",
+					"style": {
+						// #ifdef H5
+						"navigationStyle": "custom",
+						// #endif
+						"navigationBarTitleText": "来架加工"
+					}
+				},
+				{
 					"path": "goods/coupon/coupon",
 					"style": {
 						// #ifdef H5

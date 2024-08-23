@@ -54,7 +54,8 @@
 						<view @click="goDetail(goodsItem.sku_id)" class="goods-name"
 							style="font-size: 35rpx;font-weight: bold;">{{ goodsItem.sku_name }}</view>
 						<view class="sku" v-if="orderData.is_photograph!=1">
-							<view class="goods-spec" style="background: #f8f8f8;border-radius: 10rpx;" v-if="goodsItem.photometric!=0">
+							<view class="goods-spec" style="background: #f8f8f8;border-radius: 10rpx;"
+								v-if="goodsItem.photometric!=0">
 								<block v-for="(x, i) in goodsItem.sku_spec_format" :key="i">
 									{{ x.spec_value_name }} {{ i < goodsItem.sku_spec_format.length - 1 ? '; ' : '' }}
 								</block>
@@ -63,8 +64,16 @@
 								<text style="font-size: 3vw;color: rgb(160,160,160);">轴位：{{goodsItem.axis}}</text>
 								 -->
 
-<sku-list :goodsItem="goodsItem"></sku-list> 
+								<sku-list :goodsItem="goodsItem"></sku-list>
 
+							</view>
+							<view class="goods-spec" style="background: #f8f8f8;border-radius: 10rpx;" v-else>
+								<text style="font-size: 3vw;color: rgb(160,160,160);margin-right: 1vw;">左右眼：{{goodsItem.eye == '左眼' ? 'L' : 'R'}}</text>
+								<text style="font-size: 3vw;color: rgb(160,160,160);margin-right: 1vw;">球镜：{{goodsItem.ball_mirror}}</text>
+								<text style="font-size: 3vw;color: rgb(160,160,160);margin-right: 1vw;">柱镜：{{goodsItem.cylinder_mirror}}</text>
+								<text style="font-size: 3vw;color: rgb(160,160,160);">轴位：{{goodsItem.axis}}</text>
+								<text style="font-size: 3vw;color: rgb(160,160,160);" v-if="goodsItem.a_dd">ADD：{{goodsItem.a_dd}}</text>
+								<text style="font-size: 3vw;color: rgb(160,160,160);" v-if="goodsItem.passage">通道：{{goodsItem.passage}}</text>
 							</view>
 						</view>
 						<view class="goods-sub-section" v-if="orderData.is_photograph!=1">
@@ -81,10 +90,17 @@
 								</text>
 							</view>
 						</view>
+						<view class="rate_price" v-if="goodsItem.rate_price > 0">
+							<view class="box color-base-text">
+								<text class="operator">来架加工费：</text>
+								<text class="unit">{{ $lang('common.currencySymbol') }}</text>
+								<text class="money">{{ goodsItem.rate_price }}</text>
+							</view>
+						</view>
 						<view class="" v-if="orderData.is_photograph==1">
 						</view>
 
-						<view class="imageBox">
+						<view class="imageBox" v-if="orderData.images">
 							<view class="imgItem" v-for="(item,index) in orderData.images" :key="index"
 								@click="$refs.imageBox.show(item)">
 								<image :src="item" mode="widthFix"></image>
@@ -181,6 +197,16 @@
 					<text class="color-title">
 						<text class="font-size-goods-tag">{{ $lang('common.currencySymbol') }}</text>
 						{{ orderData.goods_money }}
+					</text>
+				</view>
+			</view>
+			<view class="order-cell" v-if="orderData.rate_price > 0">
+				<text class="tit">来架加工费</text>
+				<view class="box align-right">
+					<text class="color-base-text">
+						<!-- <text class="operator">+</text> -->
+						<text class="font-size-goods-tag">{{ $lang('common.currencySymbol') }}</text>
+						<text>{{ orderData.rate_price }}</text>
 					</text>
 				</view>
 			</view>
@@ -416,17 +442,19 @@
 						if (res.code >= 0) {
 							this.orderData = res.data;
 							// this.orderData.images=[...this.orderData.images,...this.orderData.images]
-							if(this.orderData.images!=="")this.orderData.images = JSON.parse(this.orderData.images)
-						
-							if(this.orderData&&this.orderData.order_goods)this.orderData.order_goods.forEach(v => {
-								// if (v.sku_spec_format) {
-								// 	console.log(v.sku_spec_format)
-								// 	debugger
-								// 	if(v.sku_spec_format!=="")v.sku_spec_format = JSON.parse(v.sku_spec_format);
-								// } else {
-								// 	v.sku_spec_format = [];
-								// }
-							});
+							if (this.orderData.images !== "") this.orderData.images = JSON.parse(this.orderData
+								.images)
+
+							if (this.orderData && this.orderData.order_goods) this.orderData.order_goods
+								.forEach(v => {
+									// if (v.sku_spec_format) {
+									// 	console.log(v.sku_spec_format)
+									// 	debugger
+									// 	if(v.sku_spec_format!=="")v.sku_spec_format = JSON.parse(v.sku_spec_format);
+									// } else {
+									// 	v.sku_spec_format = [];
+									// }
+								});
 							if (res.data.order_status == 3) res.data.take_delivery_execute_time = this.$util
 								.countDown(res.data.take_delivery_execute_time -
 									res.timestamp);
@@ -464,9 +492,63 @@
 						});
 						break;
 					case 'memberTakeDelivery': //收货
-						this.orderDelivery(this.orderData.order_id, () => {
-							this.getOrderData();
-						});
+						//拉起确认收货组件
+						if (this.orderData.pay_type == 'wechatpay') {
+							if (this.orderData.is_takedelivery == 1){
+								if (wx.openBusinessView) {
+									wx.openBusinessView({
+										businessType: 'weappOrderConfirm',
+										extraData: {
+											merchant_id: this.orderData.merchant_id,
+											merchant_trade_no: this.orderData.out_trade_no,
+											transaction_id: this.orderData.transaction_id
+										},
+										complete: e => {
+											if (e.extraData.status === 'success') {
+												// 用户确认收货成功，再执行自己的代码
+												this.$api.sendRequest({
+													url: '/api/order/takedelivery',
+													data: {
+														order_id: this.orderData.order_id
+													},
+													success: res => {
+														this.$util.showToast({
+															title: res.message
+														})
+														this.getOrderData();
+													}
+												})
+											} else if (e.extraData.status === 'fail') {
+												// 用户确认收货失败
+												this.$util.showToast({
+													title: '确认收货失败!'
+												})
+											} else if (e.extraData.status === 'cancel') {
+												// 用户取消
+												this.$util.showToast({
+													title: '取消确认收货!'
+												})
+											}
+										}
+									});
+								} else {
+									//引导用户升级微信版本
+									this.$util.showToast({
+										title: '请升级微信版本'
+									})
+								}
+							} else {
+								this.orderDelivery(this.orderData.order_id, () => {
+									this.getOrderData();
+								});
+							}
+						} else {
+							this.orderDelivery(this.orderData.order_id, () => {
+								this.getOrderData();
+							});
+						}
+						
+						
 						break;
 					case 'trace': //查看物流
 						this.$util.redirectTo('/pages/order/logistics/logistics', {
@@ -564,5 +646,11 @@
 				right: 10rpx;
 			}
 		}
+	}
+	.rate_price{
+		width: 100%;
+		justify-content: flex-end;
+		display: flex;
+		padding-top: .5rem;
 	}
 </style>

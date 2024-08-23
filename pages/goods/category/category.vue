@@ -48,7 +48,7 @@
       this.$nextTick(() => {
 
         eventBus.$emit("open")
-        console.warn(this.$store.state.list_third_id, "我又出来了", this.$store.state.list_second_id, this.$refs.gl)
+        // console.warn(this.$store.state.list_third_id, "我又出来了", this.$store.state.list_second_id, this.$refs.gl)
         // this.$refs.gl.openTheTree()
       })
 

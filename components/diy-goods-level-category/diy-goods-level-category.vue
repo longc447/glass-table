@@ -73,7 +73,7 @@
         this.$emit('netFinish', true);
       },
       openTheTree() {
-        console.warn("second")
+        // console.warn("second")
         this.$refs["a"].open()
       }
     }

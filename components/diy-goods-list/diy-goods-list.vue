@@ -66,8 +66,8 @@ export default {
     };
   },
   created() {
-    console.log('=========');
-    console.log(uni.getStorageSync('is_wholesaler'));
+    // console.log('=========');
+    // console.log(uni.getStorageSync('is_wholesaler'));
     if (uni.getStorageSync('is_wholesaler')) this.is_wholesaler = uni.getStorageSync('is_wholesaler');
     this.getGoodsList();
   },
@@ -82,7 +82,7 @@ export default {
           async: false,
         });
         if (ret.code == 0) {
-          console.log(ret);
+          // console.log(ret);
           //this.is_wholesaler = ret.is_wholesaler
         }
       }

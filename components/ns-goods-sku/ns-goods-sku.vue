@@ -391,8 +391,8 @@
 		mounted() {
 			this.isIphoneX = this.$util.uniappIsIPhoneX();
 			this.systemInfo = uni.getSystemInfoSync();
-			this.getWholesale(this.goodsDetail);
 			if (this.goodsDetail.goods_id == 0) this.$emit("error")
+			this.getWholesale(this.goodsDetail);
 		},
 		watch: {
 			pointLimit(newNum, oldNum) {

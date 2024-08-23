@@ -117,7 +117,7 @@ export default {
 				url: url,
 				data: data,
 				success: res => {
-					console.log(res,"tabbar")
+					// console.log(res,"tabbar")
 					let data = res.data;
 					if (data && data.value && data.value.length) {
 						var value = JSON.parse(data.value);

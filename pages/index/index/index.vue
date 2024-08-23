@@ -270,7 +270,7 @@ export default {
         async: false,
       });
       if (res.code == 0) {
-        console.log(res);
+        // console.log(res);
         this.is_wholesaler = res.is_wholesaler;
       }
     },

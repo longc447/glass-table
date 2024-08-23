@@ -48,6 +48,8 @@ export default {
 
 		// token
 		if (uni.getStorageSync('token')) data.token = uni.getStorageSync('token');
+		
+		if (!uni.getStorageSync('token')) uni.setStorageSync('is_wholesaler',Config.is_wholesaler);
 
 		// 城市id
 		if (uni.getStorageSync('city')) data.web_city = uni.getStorageSync('city').id;
@@ -72,6 +74,12 @@ export default {
 							uni.setStorage({
 								key: 'token',
 								data: res.data.refreshtoken
+							});
+						}
+						if (res.is_wholesaler) {
+							uni.setStorage({
+								key: 'is_wholesaler',
+								data: res.is_wholesaler
 							});
 						}
 						if (res.data.code == -10009 || res.data.code == -10010) {
@@ -105,6 +113,12 @@ export default {
 						uni.setStorage({
 							key: 'token',
 							data: res.data.refreshtoken
+						});
+					}
+					if (res.is_wholesaler) {
+						uni.setStorage({
+							key: 'is_wholesaler',
+							data: res.is_wholesaler
 						});
 					}
 					if (res.data.code == -10009 || res.data.code == -10010) {

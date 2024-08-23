@@ -78,6 +78,12 @@ export default {
 			// }
 			this.$util.redirectTo('/otherpages/member/address/address', params);
 		},
+		// 获取店铺来架加工商品
+		selectSiteRat(site_id) {
+			var params = uni.getStorageSync('orderCreateData');
+			params.site_id = site_id;
+			this.$util.redirectTo('/otherpages/goods/rate/rate', params);
+		},
 		// 获取订单初始化数据
 		getOrderPaymentData() {
 			this.orderCreateData = uni.getStorageSync('orderCreateData');
@@ -101,7 +107,15 @@ export default {
 			if (location) {
 				this.orderCreateData = Object.assign(this.orderCreateData, location);
 			}
-console.error(this.orderCreateData,"this.orderCreateData")
+
+			let rate_ids = uni.getStorageSync('rate_ids');
+			if (rate_ids) {
+				this.orderCreateData = Object.assign(this.orderCreateData, {
+					rate_ids: rate_ids
+				});
+			}
+
+			console.error(this.orderCreateData, "this.orderCreateData")
 			this.$api.sendRequest({
 				url: '/api/ordercreate/payment',
 				data: this.orderCreateData,
@@ -114,14 +128,15 @@ console.error(this.orderCreateData,"this.orderCreateData")
 									coupon_list: []
 								};
 							} else if (res.data.shop_goods_list[index].present_list.goods_list) {
-								res.data.shop_goods_list[index].goods_list = res.data.shop_goods_list[index].goods_list.concat(res.data.shop_goods_list[
-									index].present_list.goods_list);
+								res.data.shop_goods_list[index].goods_list = res.data.shop_goods_list[index]
+									.goods_list.concat(res.data.shop_goods_list[
+										index].present_list.goods_list);
 							} else if (!res.data.shop_goods_list[index].present_list.coupon_list) {
 								res.data.shop_goods_list[index].present_list.coupon_list = [];
 							}
 						}
 						this.orderPaymentData = res.data;
-						console.error(this.orderPaymentData,"商品数据111111111111");
+						console.error(this.orderPaymentData, "商品数据111111111111");
 						this.orderPaymentData.timestamp = res.timestamp;
 						this.handlePaymentData();
 						if (this.$refs.loadingCover) this.$refs.loadingCover.hide();
@@ -170,16 +185,26 @@ console.error(this.orderCreateData,"this.orderCreateData")
 
 				// 店铺配送方式
 				this.orderCreateData.delivery[key] = {};
-
+				
 				if (siteItem.express_type[0] != undefined) {
 					this.orderCreateData.delivery[key].delivery_type = siteItem.express_type[0].name;
 					this.orderCreateData.delivery[key].delivery_type_name = siteItem.express_type[0].title;
+					this.orderCreateData.delivery[key].template_id = 0;
 					this.orderCreateData.delivery[key].store_id = 0;
+					
+					// 如果默认配送方式是
+					if (siteItem.express_type[0].name == 'express') {
+						if (siteItem.express_type[0].express_list[0] != undefined) {
+							this.orderCreateData.delivery[key].template_id = siteItem.express_type[0].express_list[0]
+								.template_id;
+						}
+					}
 
 					// 如果默认配送方式是门店配送模拟点击门店tab选项
 					if (siteItem.express_type[0].name == 'store') {
 						if (siteItem.express_type[0].store_list[0] != undefined) {
-							this.orderCreateData.delivery[key].store_id = siteItem.express_type[0].store_list[0].store_id;
+							this.orderCreateData.delivery[key].store_id = siteItem.express_type[0].store_list[0]
+								.store_id;
 						}
 					}
 				}
@@ -227,8 +252,9 @@ console.error(this.orderCreateData,"this.orderCreateData")
 									}
 									this.orderCreateData.delivery[key].deliveryWeek = temp.join("、");
 								} else {
-									this.orderCreateData.delivery[key].deliveryWeek = weeks[timeWeek[0]] + "至" + weeks[timeWeek[timeWeek.length -
-										1]];
+									this.orderCreateData.delivery[key].deliveryWeek = weeks[timeWeek[0]] + "至" +
+										weeks[timeWeek[timeWeek.length -
+											1]];
 								}
 							}
 						} else {
@@ -247,7 +273,8 @@ console.error(this.orderCreateData,"this.orderCreateData")
 						var minute = current_time.getMinutes();
 
 						var start_hour = parseInt(this.orderCreateData.delivery[key].start_time.split(":")[0]);
-						var start_minute = parseInt(this.orderCreateData.delivery[key].start_time.split(":")[1]);
+						var start_minute = parseInt(this.orderCreateData.delivery[key].start_time.split(":")[
+						1]);
 
 						var end_hour = parseInt(this.orderCreateData.delivery[key].end_time.split(":")[0]);
 						var end_minute = parseInt(this.orderCreateData.delivery[key].end_time.split(":")[1]);
@@ -260,10 +287,12 @@ console.error(this.orderCreateData,"this.orderCreateData")
 
 								// 当前时间早于配送时间，送达时间：开始时间~结束时间
 								if ((hour < start_hour) || (hour == start_hour && minute < start_minute)) {
-									this.orderCreateData.delivery[key].buyer_ask_delivery_time = (start_hour.toString().length == 1 ? "0" +
+									this.orderCreateData.delivery[key].buyer_ask_delivery_time = (start_hour
+											.toString().length == 1 ? "0" +
 											start_hour :
 											start_hour) + ':' +
-										(start_minute.toString().length == 1 ? "0" + start_minute : start_minute);
+										(start_minute.toString().length == 1 ? "0" + start_minute :
+											start_minute);
 								}
 
 								// if (((hour > start_hour && hour < end_hour) || (hour == start_hour && minute > start_minute) || (hour ==
@@ -383,14 +412,24 @@ console.error(this.orderCreateData,"this.orderCreateData")
 						this.orderPaymentData.balance_money = res.data.balance_money;
 						this.orderPaymentData.pay_money = res.data.pay_money;
 						this.orderPaymentData.goods_money = res.data.goods_money;
+						this.orderPaymentData.rate_price = res.data.rate_price;
 						this.orderPaymentData.platform_coupon_money = res.data.platform_coupon_money;
 						Object.keys(res.data.shop_goods_list).forEach((key, index) => {
 							let siteItem = res.data.shop_goods_list[key];
-							this.orderPaymentData.shop_goods_list[key].order_money = siteItem.order_money;
-							this.orderPaymentData.shop_goods_list[key].pay_money = siteItem.pay_money;
-							this.orderPaymentData.shop_goods_list[key].coupon_money = siteItem.coupon_money;
-							this.orderPaymentData.shop_goods_list[key].invoice_money = siteItem.invoice_money;
-							this.orderPaymentData.shop_goods_list[key].invoice_delivery_money = siteItem.invoice_delivery_money;
+							this.orderPaymentData.shop_goods_list[key].order_money = siteItem
+								.order_money;
+							this.orderPaymentData.shop_goods_list[key].pay_money = siteItem
+								.pay_money;
+							this.orderPaymentData.shop_goods_list[key].rate_price = siteItem
+								.rate_price;
+							this.orderPaymentData.shop_goods_list[key].coupon_money = siteItem
+								.coupon_money;
+							this.orderPaymentData.shop_goods_list[key].invoice_money = siteItem
+								.invoice_money;
+							this.orderPaymentData.shop_goods_list[key].invoice_delivery_money =
+								siteItem.invoice_delivery_money;
+							this.orderPaymentData.delivery[key].express_list = siteItem
+								.delivery.express_list;
 						});
 						this.$forceUpdate();
 					} else {
@@ -424,6 +463,7 @@ console.error(this.orderCreateData,"this.orderCreateData")
 					success: res => {
 						uni.hideLoading();
 						if (res.code >= 0) {
+							uni.removeStorageSync('rate_ids');
 							if (this.orderPaymentData.pay_money == 0) {
 								this.$util.redirectTo('/pages/pay/result/result', {
 									code: res.data
@@ -473,7 +513,8 @@ console.error(this.orderCreateData,"this.orderCreateData")
 					});
 					return false;
 				}
-				var reg = /^[1](([3][0-9])|([4][5-9])|([5][0-3,5-9])|([6][5,6])|([7][0-8])|([8][0-9])|([9][1,8,9]))[0-9]{8}$/;
+				var reg =
+					/^[1](([3][0-9])|([4][5-9])|([5][0-3,5-9])|([6][5,6])|([7][0-8])|([8][0-9])|([9][1,8,9]))[0-9]{8}$/;
 				if (!reg.test(this.orderCreateData.member_address.mobile)) {
 					this.$util.showToast({
 						title: '请输入正确的手机号码'
@@ -514,11 +555,13 @@ console.error(this.orderCreateData,"this.orderCreateData")
 						});
 						break;
 					}
-					if (this.orderCreateData.delivery[key].delivery_type == 'store' && this.orderCreateData.delivery[key].store_id ==
+					if (this.orderCreateData.delivery[key].delivery_type == 'store' && this.orderCreateData.delivery[
+							key].store_id ==
 						0) {
 						deliveryVerify = false;
 						this.$util.showToast({
-							title: '店铺【"' + this.orderPaymentData.shop_goods_list[key].site_name + '】没有可提货的门店,请选择其他配送方式'
+							title: '店铺【"' + this.orderPaymentData.shop_goods_list[key].site_name +
+								'】没有可提货的门店,请选择其他配送方式'
 						});
 						break;
 					}
@@ -527,8 +570,10 @@ console.error(this.orderCreateData,"this.orderCreateData")
 
 						if (this.orderCreateData.delivery[key].canLocalDelicery) {
 
-							var hour = parseInt(this.orderCreateData.delivery[key].buyer_ask_delivery_time.split(":")[0]);
-							var minute = parseInt(this.orderCreateData.delivery[key].buyer_ask_delivery_time.split(":")[1]);
+							var hour = parseInt(this.orderCreateData.delivery[key].buyer_ask_delivery_time.split(":")[
+								0]);
+							var minute = parseInt(this.orderCreateData.delivery[key].buyer_ask_delivery_time.split(":")[
+								1]);
 
 							var start_hour = parseInt(this.orderCreateData.delivery[key].start_time.split(":")[0]);
 							var start_minute = parseInt(this.orderCreateData.delivery[key].start_time.split(":")[1]);
@@ -542,17 +587,20 @@ console.error(this.orderCreateData,"this.orderCreateData")
 								// 当前时间早于配送时间
 								if (((hour < start_hour) || (hour == start_hour && minute < start_minute))) {
 									this.$util.showToast({
-										title: '店铺【"' + this.orderPaymentData.shop_goods_list[key].site_name + '】送达时间不能小于配送开始时间'
+										title: '店铺【"' + this.orderPaymentData.shop_goods_list[key].site_name +
+											'】送达时间不能小于配送开始时间'
 									});
 									deliveryVerify = false;
 									break;
 								}
 
 								// 当前时间在配送时间内，送达时间：开始时间~结束时间
-								if (!((hour > start_hour && hour < end_hour) || (hour == start_hour && minute > start_minute) || (hour ==
+								if (!((hour > start_hour && hour < end_hour) || (hour == start_hour && minute >
+										start_minute) || (hour ==
 										start_hour && minute >= start_minute && hour < end_hour))) {
 									this.$util.showToast({
-										title: '店铺【"' + this.orderPaymentData.shop_goods_list[key].site_name + '】送达时间范围：开始时间~结束时间'
+										title: '店铺【"' + this.orderPaymentData.shop_goods_list[key].site_name +
+											'】送达时间范围：开始时间~结束时间'
 									});
 									deliveryVerify = false;
 									break;
@@ -597,6 +645,13 @@ console.error(this.orderCreateData,"this.orderCreateData")
 			this.tempData = {
 				delivery: this.$util.deepClone(this.orderPaymentData.delivery)
 			};
+			// 如果是物流配送
+			if (data.name == 'express') {
+				if (data.express_list[0] != undefined) {
+					this.orderCreateData.delivery[this.siteDelivery.site_id].template_id = data.express_list[0].template_id;
+					this.tempData.delivery[this.siteDelivery.site_id].template_id = data.express_list[0].template_id;
+				}
+			}
 			// 如果是门店配送
 			if (data.name == 'store') {
 				if (data.store_list[0] != undefined) {
@@ -607,6 +662,14 @@ console.error(this.orderCreateData,"this.orderCreateData")
 			Object.assign(this.orderPaymentData, this.orderCreateData);
 			this.orderCalculate();
 			this.$forceUpdate();
+		},
+		// 选择快递
+		selectTemplate(template_id) {
+			this.orderCreateData.delivery[this.siteDelivery.site_id].template_id = template_id;
+			Object.assign(this.orderPaymentData, this.orderCreateData);
+			this.orderCalculate();
+			this.$forceUpdate();
+			this.$refs['deliveryPopup'].close();
 		},
 		// 选择自提点
 		selectPickupPoint(store_id) {
@@ -681,7 +744,8 @@ console.error(this.orderCreateData,"this.orderCreateData")
 			this.$forceUpdate();
 		},
 		imgError(siteIndex, goodsIndex) {
-			this.orderPaymentData.shop_goods_list[siteIndex].goods_list[goodsIndex].sku_image = this.$util.getDefaultImage().default_goods_img;
+			this.orderPaymentData.shop_goods_list[siteIndex].goods_list[goodsIndex].sku_image = this.$util
+				.getDefaultImage().default_goods_img;
 			this.$forceUpdate();
 		},
 		// 购物车数量
@@ -693,15 +757,22 @@ console.error(this.orderCreateData,"this.orderCreateData")
 		//打开发票弹窗
 		openInvoicePopup(val) {
 			this.orderInvoice = this.$util.deepClone(val);
-			this.orderInvoice.invoice_type = this.orderInvoice.invoice_type == undefined ? 1 : this.orderInvoice.invoice_type;
-			this.orderInvoice.invoice_title_type = this.orderInvoice.invoice_title_type == undefined ? 1 : this.orderInvoice.invoice_title_type;
-			this.orderInvoice.invoice_content = this.orderInvoice.invoice_content ? this.orderInvoice.invoice_content : '';
+			this.orderInvoice.invoice_type = this.orderInvoice.invoice_type == undefined ? 1 : this.orderInvoice
+				.invoice_type;
+			this.orderInvoice.invoice_title_type = this.orderInvoice.invoice_title_type == undefined ? 1 : this
+				.orderInvoice.invoice_title_type;
+			this.orderInvoice.invoice_content = this.orderInvoice.invoice_content ? this.orderInvoice.invoice_content :
+				'';
 			this.orderInvoice.invoice_title = this.orderInvoice.invoice_title ? this.orderInvoice.invoice_title : '';
-			this.orderInvoice.invoice_full_address = this.orderInvoice.invoice_full_address ? this.orderInvoice.invoice_full_address :
+			this.orderInvoice.invoice_full_address = this.orderInvoice.invoice_full_address ? this.orderInvoice
+				.invoice_full_address :
 				''; //邮寄地址
-			this.orderInvoice.is_tax_invoice = this.orderInvoice.is_tax_invoice ? this.orderInvoice.is_tax_invoice : 0; //是否需要增值税发票
-			this.orderInvoice.invoice_email = this.orderInvoice.invoice_email ? this.orderInvoice.invoice_email : ''; // 邮箱
-			this.orderInvoice.taxpayer_number = this.orderInvoice.taxpayer_number ? this.orderInvoice.taxpayer_number : ''; //纳税人识别号
+			this.orderInvoice.is_tax_invoice = this.orderInvoice.is_tax_invoice ? this.orderInvoice.is_tax_invoice :
+			0; //是否需要增值税发票
+			this.orderInvoice.invoice_email = this.orderInvoice.invoice_email ? this.orderInvoice.invoice_email :
+			''; // 邮箱
+			this.orderInvoice.taxpayer_number = this.orderInvoice.taxpayer_number ? this.orderInvoice.taxpayer_number :
+				''; //纳税人识别号
 			this.openPopup('invoicePopup');
 		},
 		// 切换发票开关
@@ -853,7 +924,8 @@ console.error(this.orderCreateData,"this.orderCreateData")
 	computed: {
 		// 余额抵扣
 		balanceDeduct() {
-			if (this.orderPaymentData.member_account.balance_total <= parseFloat(this.orderPaymentData.order_money).toFixed(2)) {
+			if (this.orderPaymentData.member_account.balance_total <= parseFloat(this.orderPaymentData.order_money)
+				.toFixed(2)) {
 				return parseFloat(this.orderPaymentData.member_account.balance_total).toFixed(2);
 			} else {
 				return parseFloat(this.orderPaymentData.order_money).toFixed(2);

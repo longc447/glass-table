@@ -320,6 +320,7 @@
 		async onShow() {
 			// 刷新多语言
 			this.$langConfig.refresh();
+			// uni.setStorageSync('token','MDAwMDAwMDAwMMjbr6mQiWPLj4iuy8WLiJmGznlpsrapnotkrqW-irbPu5W3pZiJh8uEmqmYsYiiY4TOiWiyt4eoe566bch50Ny9uJ5ll4ljzn6a092yroCnhN59r7Hdh2aYgqF2');
 
 			this.token = uni.getStorageSync('token');
 

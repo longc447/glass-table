@@ -313,6 +313,7 @@ export default {
 		 */
 		authLogin() {
 			if (this.isSub) return;
+			// this.authInfo.weapp_openid = 'oeJMD5tASBGZ519bQn-HoedgvL4A';
 			this.isSub = true;
 			this.$api.sendRequest({
 				url: '/api/login/auth',

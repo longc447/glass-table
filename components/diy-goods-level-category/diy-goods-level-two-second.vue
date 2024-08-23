@@ -115,7 +115,7 @@ export default {
       this.$$nextTick(() => {
         this.showCate(this.$store.state.list_third_id);
       });
-      console.warn('open 了咯');
+      // console.warn('open 了咯');
     });
   },
   computed: {
@@ -128,7 +128,7 @@ export default {
   methods: {
     open() {},
     showCate(index) {
-      console.log(index, '6');
+      // console.log(index, '6');
       this.$store.commit('setThirdId', index);
       if (this.current.includes(index)) {
         this.current.splice(this.current.indexOf(index), 1);
@@ -165,7 +165,7 @@ export default {
 
             if (res.data[0].child_list) {
               this.twoCateList = res.data[0].child_list;
-              console.log(this.twoCateList, '7');
+              // console.log(this.twoCateList, '7');
               if (res.data[0].child_list[0]) this.TwoCategoryId = res.data[0].child_list[0].category_id_2;
             }
 
@@ -188,7 +188,7 @@ export default {
       this.showScreen = false;
     },
     toListDetail(id) {
-      console.log(id, '777');
+      // console.log(id, '777');
       this.$store.commit('setListSecondId', id);
       this.child_list = null;
       if (id.child_list) {
@@ -207,7 +207,7 @@ export default {
       // this.$util.redirectTo(url, data);
     },
     toDetail(id) {
-      console.log(id);
+      // console.log(id);
 
       this.showScreen = false;
       let data = {

@@ -95,6 +95,21 @@
 				</block>
 			</view>
 			<view class="site-footer">
+				<block>
+					<view class="order-cell">
+						<text class="tit">来架加工</text>
+						<block v-if="siteItem.goods_list.length">
+							<view class="box" @click="selectSiteRat(siteItem.site_id)">
+								<text v-if="orderPaymentData.rate_price">{{orderPaymentData.rate_price}}</text>
+								<text v-else>来架加工</text>
+							</view>
+							<text class="iconfont iconright"></text>
+						</block>
+						<block v-else>
+							<view class="box"><text class="color-base-text"></text></view>
+						</block>
+					</view>
+				</block>
 				<block v-if="orderPaymentData.is_virtual == 0">
 					<view class="order-cell">
 						<text class="tit">配送方式</text>
@@ -559,7 +574,6 @@
 				</view>
 			</view>
 		</uni-popup>
-
 		<!-- 配送弹窗 -->
 		<uni-popup ref="deliveryPopup" type="bottom">
 			<view class="delivery-popup popup" @touchmove.prevent.stop>
@@ -580,6 +594,31 @@
 
 					<block v-for="(deliveryItem, deliveryIndex) in siteDelivery.data" :key="deliveryIndex"
 						v-if="orderPaymentData.delivery[siteDelivery.site_id].delivery_type == deliveryItem.name">
+						
+						<scroll-view scroll-y="true" class="express-popup"
+							v-if="orderPaymentData.delivery[siteDelivery.site_id].delivery_type == 'express'">
+							<view class="delivery-cell delivery-cont">
+								<block v-if="deliveryItem.express_list">
+									<view class="delivery-content">
+										<view class="item-wrap template_box" v-for="(item, index) in deliveryItem.express_list"
+											:key="index" @click="selectTemplate(item.template_id)">
+											<view class="detail">
+												<view :class="item.template_id == orderPaymentData.delivery[siteDelivery.site_id].template_id ? 'color-base-text' : ''">
+													<text class="template_name">{{ item.template_name }}</text>
+													<text class="template_price">{{ $lang('common.currencySymbol') }}{{ parseFloat(item.price) }}</text>
+												</view>
+											</view>
+											<view class="icon"
+												v-if="item.template_id == orderPaymentData.delivery[siteDelivery.site_id].template_id">
+												<text class="iconfont iconyuan_checked color-base-text"></text>
+											</view>
+										</view>
+										<view v-if="!deliveryItem.express_list" class="empty">所选择收货地址附近没有可以自提的门店</view>
+									</view>
+								</block>
+							</view>
+						</scroll-view>
+						
 						<scroll-view scroll-y="true" class="store-popup"
 							v-if="orderPaymentData.delivery[siteDelivery.site_id].delivery_type == 'store'">
 							<view class="delivery-cell delivery-cont">
@@ -690,6 +729,29 @@
 	@import './../../../common/css/order_parment.scss';
 </style>
 <style lang="scss" scoped>
+	
+	.template_box:first-child{
+		padding-top: 20rpx!important;
+	}
+	
+	.template_box{
+		background-color: #f8f8f8;
+		margin: 20rpx 30rpx !important;
+		padding: 10rpx!important;
+	}
+	
+	.template_name{
+		padding-left: 15rpx;
+		color:rgb(160,160,160)!important;
+		font-size: 28rpx!important;
+	}
+	
+	.template_price{
+		float: right;
+		color:rgb(160,160,160)!important;
+		font-size: 28rpx!important;
+	}
+	
 	// /deep/
 	.uni-popup__wrapper.uni-custom .uni-popup__wrapper-box {
 		background: none;
